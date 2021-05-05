@@ -1,0 +1,28 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+
+body{
+    background-image: url('./img/bg_img.jpg');
+}
+
+.body-content{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100vh;
+}
+
+h1{
+    font-family: 'Pangolin', cursive;
+    color: #f6a2c6;
+    font-size: 120px;
+    text-shadow: 2px 2px 4px #a0a0a0;
+    transition: 2s;
+}
+h6{
+    font-family: 'Pangolin', cursive;
+}
