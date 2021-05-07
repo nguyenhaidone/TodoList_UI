@@ -1,7 +1,6 @@
 import React from "react";
 import "./App.css";
-
-//content, todo
+import init from "./initVar";
 class App extends React.Component {
   state = {
     todos: [],
@@ -9,16 +8,10 @@ class App extends React.Component {
   };
 
   fetchCreateTask(todoContent) {
-    const url = "https://localhost:44316/api/TodoLists";
-    const setHeaders = {
-      "Access-Control-Allow-Origin": "*",
-      "Content-Type": "application/json",
-    };
-
     if (todoContent !== "") {
-      fetch(url, {
+      fetch(init.url, {
         method: "POST",
-        headers: setHeaders,
+        headers: init.setHeaders,
         body: JSON.stringify({
           id: Math.floor(Math.random() * 1000000),
           contentTask: todoContent,
@@ -41,23 +34,14 @@ class App extends React.Component {
   }
 
   fetchGetList() {
-    const setHeaders = {
-      "Access-Control-Allow-Origin": "*",
-      "Content-Type": "application/json",
-    };
-
-    const url = "https://localhost:44316/api/TodoLists";
-
-    fetch(url, {
+    fetch(init.url, {
       method: "GET",
-      headers: setHeaders,
+      headers: init.setHeaders,
     })
       .then((res) => {
         return res.json();
       })
       .then((data) => {
-        // console.log(data);
-        // window.alert(data[1].id);
         this.setState({
           todos: data,
         });
@@ -65,34 +49,27 @@ class App extends React.Component {
   }
 
   fetchDeteleTask(idTaskDelete) {
-    const setHeaders = {
-      "Access-Control-Allow-Origin": "*",
-      "Content-Type": "application/json",
-    };
-
-    fetch(`https://localhost:44316/api/TodoLists/${idTaskDelete}`, {
+    fetch(`${init.url}/${idTaskDelete}`, {
       method: "delete",
-      headers: setHeaders,
+      headers: init.setHeaders,
     })
       .then((res) => {
         res.text();
       })
       .then((res) => {
         this.componentDidMount();
+      })
+      .catch((error) => {
+        console.log(error);
       });
   }
 
   fetchUpdateStatusTask(idTask, content, status) {
-    const setHeaders = {
-      "Access-Control-Allow-Origin": "*",
-      "Content-Type": "application/json",
-    };
-
     const isFinished = status === true ? 1 : 0;
 
-    fetch(`https://localhost:44316/api/TodoLists/${idTask}`, {
+    fetch(`${init.url}/${idTask}`, {
       method: "PUT",
-      headers: setHeaders,
+      headers: init.setHeaders,
       body: JSON.stringify({
         id: idTask,
         contentTask: content,
@@ -120,7 +97,6 @@ class App extends React.Component {
     // Mỗi lần setState thì hàm render chạy lại một lần
   };
   //onChange sẽ gọi hàm callback nếu xảy ra event
-  //liên quan đến js thì phải viết trong dấu ngoặc nhọn
 
   // xử lý sự kiện thay đổi của input
   handleInputOnChange = (event) => {
@@ -133,9 +109,7 @@ class App extends React.Component {
     this.fetchGetList();
   }
 
-  // xử lý sự kiện onclick của button
   render() {
-    // console.log(this.state.todos);
     return (
       <div>
         <form onSubmit={this.handleOnSubmit} className="form-input">
@@ -160,23 +134,16 @@ class App extends React.Component {
                   checked={item.isDone}
                   className="chk-content"
                   onChange={(event) => {
-                    const newTodos = this.state.todos.map((todo, i) => {
+                    this.state.todos.map((todo, i) => {
                       if (index === i) {
                         this.fetchUpdateStatusTask(
                           todo.id,
                           todo.contentTask,
                           event.target.checked
                         );
-                        return {
-                          contentTask: todo.contentTask,
-                          isDone: event.target.checked,
-                        };
                       } else {
                         return todo;
                       }
-                    });
-                    this.setState({
-                      todos: newTodos,
                     });
                   }}
                 />
